@@ -65,10 +65,6 @@
 				$("#results").html("<pre>" + JSON.stringify(responseData,null,'\t') + "</pre>");
 				console.log(responseData);
 				console.log(textStatus);
-				if(responseData.token){
-					$("[name='token']").val(responseData.token);
-					alert('You have a token! You can now test the endpoints below.');
-				}
 			},
 			error: function (responseData, textStatus, errorThrown) {
 				$("#results").html("<pre>" + JSON.stringify(responseData,null,'\t') + "</pre>");
@@ -77,6 +73,57 @@
 			}
 		});
 	}
+	
+	function testNext(){
+		var token = $("#exampleInputToken2").val();
+		$("#results").html("<center>Loading...</center");
+		$.ajax({
+			type: 'GET',
+			url: 'https://thinkificbackend.herokuapp.com/next',
+			crossDomain: true,
+			headers: {
+				"Authorization": "Bearer " + token
+			},
+			dataType: 'json',
+			success: function(responseData, textStatus, jqXHR) {
+				$("#results").html("<pre>" + JSON.stringify(responseData,null,'\t') + "</pre>");
+				console.log(responseData);
+				console.log(textStatus);
+			},
+			error: function (responseData, textStatus, errorThrown) {
+				$("#results").html("<pre>" + JSON.stringify(responseData,null,'\t') + "</pre>");
+				console.log(responseData);
+				console.log(textStatus);
+			}
+		});
+	}
+	
+	function setCurrent(){
+		var token = $("#exampleInputToken3").val();
+		var current = $("#current").val();
+		$("#results").html("<center>Loading...</center");
+		$.ajax({
+			type: 'POST',
+			url: 'https://thinkificbackend.herokuapp.com/current',
+			crossDomain: true,
+			headers: {
+				"Authorization": "Bearer " + token
+			},
+			dataType: 'json',
+			data: { current : current },
+			success: function(responseData, textStatus, jqXHR) {
+				$("#results").html("<pre>" + JSON.stringify(responseData,null,'\t') + "</pre>");
+				console.log(responseData);
+				console.log(textStatus);
+			},
+			error: function (responseData, textStatus, errorThrown) {
+				$("#results").html("<pre>" + JSON.stringify(responseData,null,'\t') + "</pre>");
+				console.log(responseData);
+				console.log(textStatus);
+			}
+		});
+	}
+		
   </script>
   
   </head>
@@ -146,7 +193,15 @@
 			</div>
 			<div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
 			  <div class="card-body">
-				Endpoint: Next
+				<div>
+					<form>
+					  <div class="form-group">
+						<label for="exampleInputToken2">Token</label>
+						<textarea class="form-control" id="exampleInputToken2" name="token" rows="3"></textarea>
+					  </div>
+					  <button type="button" onclick="testNext()" class="btn btn-primary">Test</button>
+					</form>
+				</div>
 			  </div>
 			</div>
 		  </div>
@@ -160,7 +215,19 @@
 			</div>
 			<div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordionExample">
 			  <div class="card-body">
-				Endpoint: Set Current
+				<div>
+					<form>
+					  <div class="form-group">
+						<label for="exampleInputToken3">Token</label>
+						<textarea class="form-control" id="exampleInputToken3" name="token" rows="3"></textarea>
+					  </div>
+					  <div class="form-group">
+						<label for="current">Value</label>
+						<input type="number" class="form-control" id="current" name="current">
+					  </div>
+					  <button type="button" onclick="setCurrent()" class="btn btn-primary">Set Current Value</button>
+					</form>
+				</div>
 			  </div>
 			</div>
 		  </div>
