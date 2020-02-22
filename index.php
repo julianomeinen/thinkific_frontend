@@ -20,6 +20,7 @@
 	function submitLogin(){
 		var email = $("#email").val();
 		var password = $("#password").val();
+		$("#results").html("<center>Loading...</center");
 		$.ajax({
 			type: 'POST',
 			url: 'https://thinkificbackend.herokuapp.com/authenticate',
@@ -30,6 +31,44 @@
 				$("#results").html("<pre>" + JSON.stringify(responseData,null,'\t') + "</pre>");
 				console.log(responseData);
 				console.log(textStatus);
+				if(responseData.token){
+					$("[name='token']").val(responseData.token);
+					alert('You have a token! You can now test the endpoints below.');
+				}
+			},
+			error: function (responseData, textStatus, errorThrown) {
+				$("#results").html("<pre>" + JSON.stringify(responseData,null,'\t') + "</pre>");
+				console.log(responseData);
+				console.log(textStatus);
+			}
+		});
+	}
+	
+	function loginWithGoogle(){
+		if( confirm('You will need to copy the token value for the next tests.') ){
+			window.open("https://thinkificbackend.herokuapp.com/auth/google");
+		}
+	}
+	
+	function testCurrent(){
+		var token = $("#exampleInputToken1").val();
+		$("#results").html("<center>Loading...</center");
+		$.ajax({
+			type: 'GET',
+			url: 'https://thinkificbackend.herokuapp.com/current',
+			crossDomain: true,
+			headers: {
+				"Authorization": "Bearer " + token
+			},
+			dataType: 'json',
+			success: function(responseData, textStatus, jqXHR) {
+				$("#results").html("<pre>" + JSON.stringify(responseData,null,'\t') + "</pre>");
+				console.log(responseData);
+				console.log(textStatus);
+				if(responseData.token){
+					$("[name='token']").val(responseData.token);
+					alert('You have a token! You can now test the endpoints below.');
+				}
 			},
 			error: function (responseData, textStatus, errorThrown) {
 				$("#results").html("<pre>" + JSON.stringify(responseData,null,'\t') + "</pre>");
@@ -43,21 +82,88 @@
   </head>
 
   <body>
-	<div class="container" >
-		<h1>Please Log In</h1>
-		<div>
-			<form>
-			  <div class="form-group">
-				<label for="exampleInputEmail1">Email address</label>
-				<input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp">
-				<small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+	  <div class="container" >
+		<h1>Thinkific Home Test</h1>
+		  <div class="accordion" id="accordionExample">
+		  <div class="card">
+			<div class="card-header" id="headingOne">
+			  <h2 class="mb-0">
+				<button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+				  <h2>Log In</h2>
+				</button>
+			  </h2>
+			</div>
+
+			<div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+			  <div class="card-body">
+				<div>
+					<form>
+					  <div class="form-group">
+						<label for="exampleInputEmail1">Email address</label>
+						<input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp">
+						<small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+					  </div>
+					  <div class="form-group">
+						<label for="exampleInputPassword1">Password</label>
+						<input type="password" class="form-control" id="password" name="password">
+					  </div>
+					  <button type="button" onclick="submitLogin()" class="btn btn-primary">Submit</button>
+					  <button type="button" onclick="loginWithGoogle()" class="btn btn-secondary">Login with Google</button>
+					</form>
+				</div>
 			  </div>
-			  <div class="form-group">
-				<label for="exampleInputPassword1">Password</label>
-				<input type="password" class="form-control" id="password" name="password">
+			</div>
+		  </div>
+		  <div class="card">
+			<div class="card-header" id="headingTwo">
+			  <h2 class="mb-0">
+				<button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+				  <h2>Endpoint: Current</h2>
+				</button>
+			  </h2>
+			</div>
+			<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+			  <div class="card-body">
+				<div>
+					<form>
+					  <div class="form-group">
+						<label for="exampleInputToken1">Token</label>
+						<textarea class="form-control" id="exampleInputToken1" name="token" rows="3"></textarea>
+					  </div>
+					  <button type="button" onclick="testCurrent()" class="btn btn-primary">Test</button>
+					</form>
+				</div>
 			  </div>
-			  <button type="button" onclick="submitLogin()" class="btn btn-primary">Submit</button>
-			</form>
+			</div>
+		  </div>
+		  <div class="card">
+			<div class="card-header" id="headingThree">
+			  <h2 class="mb-0">
+				<button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+				  <h2>Endpoint: Next</h2>
+				</button>
+			  </h2>
+			</div>
+			<div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+			  <div class="card-body">
+				Endpoint: Next
+			  </div>
+			</div>
+		  </div>
+		  <div class="card">
+			<div class="card-header" id="headingFour">
+			  <h2 class="mb-0">
+				<button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+				  <h2>Endpoint: Set Current</h2>
+				</button>
+			  </h2>
+			</div>
+			<div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordionExample">
+			  <div class="card-body">
+				Endpoint: Set Current
+			  </div>
+			</div>
+		  </div>
 		</div>
 		<div id="results" class="jumbotron" style="margin-top:50px" >The results will be displayed here.<div>
 	</div>
